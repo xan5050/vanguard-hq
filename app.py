@@ -1,35 +1,32 @@
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    super_name = another_method("Camden")
-    return "<p>Hello, World!</p>"
-    
+    return "<p>Hello, World!</p>"    
 
-def another_method(name):
-    name = "super" + name
-    return name
+temporary_deck = {
+    "name": "Prison",
+    "desc": "Control",
+    "cards": ["card1", "card2", "card3"]
+}
+@app.route("/<deckName>/card/<cardName>", methods = ["DELETE"])
+def delCard(deckName,cardName):
+    temporary_deck["cards"].remove(cardName)
+    return temporary_deck
 
-@app.route("/bob", methods = ['POST'])
-def bob():
-    return "bob"
+@app.route("/<deckName>")
+def deck(deckName):
+    return temporary_deck
 
-
-@app.route("/<name>")
-def super_name(name):   
-    name = another_method(name)
-    return name
-
-@app.route("/link") 
-def links():
-    list1 = url_for(super_name)
-    return list1
+@app.route("/<deckName>/card", methods = ['POST'])
+def addCard(deckName):
+    card = request.json
+    temporary_deck["cards"].append(card["data"])
+    return temporary_deck
 
 
 
 if __name__ == "__main__":
     app.run()
-
-
