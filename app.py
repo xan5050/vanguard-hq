@@ -1,6 +1,6 @@
 from flask import Flask, request
 import mysql.connector
-import mysql.connector
+import json
 from mysql.connector import Error
 
 app = Flask(__name__)
@@ -9,10 +9,7 @@ app = Flask(__name__)
 def getDecks():
     try:
         mydb = mysql.connector.connect(
-            host="localhost:3306",
-            user="root",
-            password="1234",
-            database="vanguard"
+
         )
         
         if mydb.is_connected():
@@ -26,13 +23,15 @@ def getDecks():
 
         mycursor.execute("SELECT * FROM deck")
 
-        myresult = mycursor.fetchall()
-
-        for x in myresult:
-            print(x)
+        columns = [column[0] for column in mycursor.description]
+        data = [dict(zip(columns, row)) for row in mycursor.fetchall()]
+        json_data = json.dumps(data, indent=4)
+        print(json_data)
+        return json_data
 
     except Error as e:
         print(f"Error while connecting to MySQL: {e}")
+        return e.msg
     
 
 @app.route("/")
