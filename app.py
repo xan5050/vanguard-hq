@@ -1,42 +1,47 @@
-from flask import Flask, request
+from flask import Flask, request, render_template, Response
 import mysql.connector
 import json
 from mysql.connector import Error
 
 app = Flask(__name__)
 
+def getAllDecks():
+    mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="1234",
+            database="vanguard"
+        )
+        
+    if not mydb.is_connected():
+        raise Exception('Failed to connect to database!')
+    
+
+    cursor = mydb.cursor()
+    cursor.execute("SELECT * FROM deck")   
+
+
+    decks = []
+    for (deckid, deck_name, deck_desc) in cursor:
+        decks.append({
+            "DeckId": deckid,
+            "DeckName": deck_name,
+            "DeckDescription": deck_desc
+        })
+    return decks
+
 @app.route("/decks")
 def getDecks():
     try:
-        mydb = mysql.connector.connect(
-
-        )
-        
-        if mydb.is_connected():
-            db_info = mydb.get_server_info()
-            print(f"Connected to MySQL Server version {db_info}")
-            cursor = mydb.cursor()
-            cursor.execute("SELECT DATABASE();")
-            record = cursor.fetchone()
-            print(f"You're connected to database: {record}")
-        mycursor = mydb.cursor()
-
-        mycursor.execute("SELECT * FROM deck")
-
-        columns = [column[0] for column in mycursor.description]
-        data = [dict(zip(columns, row)) for row in mycursor.fetchall()]
-        json_data = json.dumps(data, indent=4)
-        print(json_data)
-        return json_data
-
+        decks  = getAllDecks()
+        return render_template('base.html', decks = decks)
     except Error as e:
-        print(f"Error while connecting to MySQL: {e}")
-        return e.msg
+        return Response(e.msg, 500)
     
-
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World!</p>"    
+    decks = getAllDecks()
+    return render_template("base.html");    
 
 temporary_deck = {
     "name": "Prison",
@@ -58,8 +63,6 @@ def addCard(deckName):
     temporary_deck["cards"].append(card["data"])
     return temporary_deck
 
-
-
-
 if __name__ == "__main__":
     app.run()
+
