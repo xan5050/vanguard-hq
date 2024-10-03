@@ -18,8 +18,7 @@ def getAllDecks():
     
 
     cursor = mydb.cursor()
-    cursor.execute("SELECT * FROM deck")   
-
+    cursor.execute("SELECT * FROM deck") 
 
     decks = []
     for (deckid, deck_name, deck_desc) in cursor:
@@ -29,6 +28,21 @@ def getAllDecks():
             "DeckDescription": deck_desc
         })
     return decks
+
+def addDeck(deck):
+    mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="1234",
+            database="vanguard"
+        )  
+
+    cursor = mydb.cursor()
+    sql = "INSERT INTO deck (name, des) VALUES (%s, %s)"
+    val = (deck["name"], deck["des"])
+    cursor.execute(sql, val)
+    mydb.commit()
+
 
 @app.route("/decks")
 def getDecks():
@@ -56,6 +70,12 @@ def delCard(deckName,cardName):
 @app.route("/<deckName>")
 def deck(deckName):
     return temporary_deck
+
+@app.route("/deck", methods = ['POST'])
+def makeDeck():
+    deck = request.form 
+    addDeck(deck)
+    return getDecks(); 
 
 @app.route("/<deckName>/card", methods = ['POST'])
 def addCard(deckName):
