@@ -29,6 +29,36 @@ def getAllDecks():
         })
     return decks
 
+def getMyDeck():
+    mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="1234",
+            database="vanguard"
+        )
+        
+    if not mydb.is_connected():
+        raise Exception('Failed to connect to database!')
+    
+
+    cursor = mydb.cursor(dictionary = True)
+    cursor.execute("SELECT * FROM vanguard.cardassignment ca inner join vanguard.card c on c.cardid = ca.cardid inner join vanguard.deck d on d.deckid = ca.deckid where ca.deckid = 1;") 
+    records = cursor.fetchall()
+    try:
+        firstRecord = records[0]
+        deck = {}
+        deck["name"] = firstRecord["Name"]
+        deck["description"] = firstRecord["Des"]
+        cards = []
+        for record in records:
+            cards.append({
+                "CardName": record["cardName"],
+                "Card Text": record["cardText"]
+            })
+        deck["cards"] = cards
+        return deck
+    except Error as e:
+        return Response(e.msg, 500)
 def addDeck(deck):
     mydb = mysql.connector.connect(
             host="localhost",
@@ -77,12 +107,23 @@ def makeDeck():
     addDeck(deck)
     return getDecks(); 
 
+@app.route("/deck/<deckID>, methods = ['GET']")
+def getDeck(deckID):
+    try:
+        deck = getMyDeck()
+        return render_template('base.html', decks = decks)
+    except Error as e:
+         return Response(e.msg, 500)
+
+
 @app.route("/<deckName>/card", methods = ['POST'])
 def addCard(deckName):
     card = request.json
     temporary_deck["cards"].append(card["data"])
     return temporary_deck
 
+
+getMyDeck()
 if __name__ == "__main__":
     app.run()
 
