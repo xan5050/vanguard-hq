@@ -59,6 +59,7 @@ def getMyDeck():
         return deck
     except Error as e:
         return Response(e.msg, 500)
+    
 def addDeck(deck):
     mydb = mysql.connector.connect(
             host="localhost",
@@ -123,7 +124,7 @@ def addCard(deckName):
     return temporary_deck
 
 
-getMyDeck()
+#getMyDeck()
 if __name__ == "__main__":
     app.run()
 
