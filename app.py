@@ -53,13 +53,45 @@ def getMyDeck():
         for record in records:
             cards.append({
                 "CardName": record["cardName"],
-                "Card Text": record["cardText"]
+                "CardText": record["cardText"],
+                "ImagePath": "./static/" + record["imageName"]
+
             })
         deck["cards"] = cards
         return deck
     except Error as e:
         return Response(e.msg, 500)
+
+def getAllCards():
+    mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="1234",
+            database="vanguard"
+        )
+        
+    if not mydb.is_connected():
+        raise Exception('Failed to connect to database!')
     
+
+    cursor = mydb.cursor(dictionary = True)
+    cursor.execute("select * FROM vanguard.card") 
+    records = cursor.fetchall()
+    try:
+       
+        cards = []
+        for record in records:
+            cards.append({
+                "CardName": record["cardName"],
+                "CardText": record["cardText"],
+                "ImagePath": "./static/" + record["imageName"]
+
+            })
+        
+        return cards
+    except Error as e:
+        return Response(e.msg, 500)
+
 def addDeck(deck):
     mydb = mysql.connector.connect(
             host="localhost",
@@ -75,44 +107,44 @@ def addDeck(deck):
     mydb.commit()
 
 
-@app.route("/decks")
+@app.route("/home")
 def getDecks():
     try:
-        decks  = getAllDecks()
-        return render_template('base.html', decks = decks)
+        #decks  = getAllDecks()
+        return render_template('base.html', decks = [])
     except Error as e:
         return Response(e.msg, 500)
     
-@app.route("/")
-def hello_world():
-    decks = getAllDecks()
-    return render_template("base.html");    
 
-temporary_deck = {
-    "name": "Prison",
-    "desc": "Control",
-    "cards": ["card1", "card2", "card3"]
-}
+@app.route("/card")
+def showAllCards():
+    try:
+        cards  = getAllCards()
+        return render_template('card.html',  cards = cards)
+    except Error as e:
+        return Response(e.msg, 500)
+
+'''
 @app.route("/<deckName>/card/<cardName>", methods = ["DELETE"])
 def delCard(deckName,cardName):
-    temporary_deck["cards"].remove(cardName)
-    return temporary_deck
+    #temporary_deck["cards"].remove(cardName)
+    return render_template('base.html', decks = [])
 
 @app.route("/<deckName>")
 def deck(deckName):
-    return temporary_deck
-
+    return render_template('base.html', decks = [])
+'''
 @app.route("/deck", methods = ['POST'])
 def makeDeck():
     deck = request.form 
     addDeck(deck)
     return getDecks(); 
-
-@app.route("/deck/<deckID>, methods = ['GET']")
+'''
+@app.route("/decks/<deckID>, methods = ['GET']")
 def getDeck(deckID):
     try:
         deck = getMyDeck()
-        return render_template('base.html', decks = decks)
+        return render_template('base.html', decks = deck)
     except Error as e:
          return Response(e.msg, 500)
 
@@ -120,11 +152,11 @@ def getDeck(deckID):
 @app.route("/<deckName>/card", methods = ['POST'])
 def addCard(deckName):
     card = request.json
-    temporary_deck["cards"].append(card["data"])
-    return temporary_deck
+    #temporary_deck["cards"].append(card["data"])
+    return render_template('base.html', decks = [])
 
-
-#getMyDeck()
+'''
+getMyDeck()
 if __name__ == "__main__":
     app.run()
 

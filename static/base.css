@@ -1,5 +1,27 @@
 nav{
-    background-color: red;
-
+    display: flex;
+    flex-direction: row;
+    background-color: #000000;
+    flex-wrap: nowrap;
+    padding: 20px;
+    justify-content: space-evenly;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    border-color: #ff6c22;
+}
+nav a{
+    padding: 10px 15px 5px 15px;
+   
+    text-decoration: none;
+    color: #40A2D8;
+    font-size: 1.5rem;
+    font-weight: bold;
+    
+}
+nav a:hover {
+    text-decoration:underline;
+    cursor: pointer;
+}
+#homePage{
 
 }
