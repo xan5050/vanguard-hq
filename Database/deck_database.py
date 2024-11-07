@@ -59,3 +59,15 @@ class deckDB:
             return deck
         except Error as e:
             return Response(e.msg, 500)
+    def addDeck(deck):
+        mydb = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                password="1234",
+                database="vanguard"
+            )  
+        cursor = mydb.cursor()
+        sql = "INSERT INTO deck (name, des) VALUES (%s, %s)"
+        val = (deck["name"], deck["des"])
+        cursor.execute(sql, val)
+        mydb.commit()    

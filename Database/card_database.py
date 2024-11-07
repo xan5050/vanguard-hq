@@ -25,7 +25,7 @@ class cardDB:
                 cards.append({
                     "CardName": record["cardName"],
                     "CardText": record["cardText"],
-                    "ImagePath": "./static/" + record["imageName"]
+                    "ImagePath": "../static/" + record["imageName"]
 
                 })
             
