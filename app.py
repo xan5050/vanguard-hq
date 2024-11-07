@@ -108,10 +108,10 @@ def addDeck(deck):
 
 
 @app.route("/home")
-def getDecks():
+def getHome():
     try:
         #decks  = getAllDecks()
-        return render_template('base.html', decks = [])
+        return render_template('home.html', decks = [])
     except Error as e:
         return Response(e.msg, 500)
     
@@ -128,23 +128,23 @@ def showAllCards():
 @app.route("/<deckName>/card/<cardName>", methods = ["DELETE"])
 def delCard(deckName,cardName):
     #temporary_deck["cards"].remove(cardName)
-    return render_template('base.html', decks = [])
+    return render_template('home.html', decks = [])
 
 @app.route("/<deckName>")
 def deck(deckName):
-    return render_template('base.html', decks = [])
+    return render_template('home.html', decks = [])
 '''
 @app.route("/deck", methods = ['POST'])
 def makeDeck():
     deck = request.form 
     addDeck(deck)
-    return getDecks(); 
+    return getHome(); 
 '''
 @app.route("/decks/<deckID>, methods = ['GET']")
 def getDeck(deckID):
     try:
         deck = getMyDeck()
-        return render_template('base.html', decks = deck)
+        return render_template('home.html', decks = deck)
     except Error as e:
          return Response(e.msg, 500)
 
@@ -153,7 +153,7 @@ def getDeck(deckID):
 def addCard(deckName):
     card = request.json
     #temporary_deck["cards"].append(card["data"])
-    return render_template('base.html', decks = [])
+    return render_template('home.html', decks = [])
 
 '''
 getMyDeck()
