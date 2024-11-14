@@ -3,11 +3,14 @@ import mysql.connector
 import json
 from mysql.connector import Error
 class deckDB:
-    def getAllDecks():
+    def __init__(self, user, password):
+        self.__user = user
+        self.__password = password
+    def getAllDecks(self):
         mydb = mysql.connector.connect(
                 host="localhost",
-                user="root",
-                password="1234",
+                user=self.__user,
+                password= self.__password,
                 database="vanguard"
             )
             
@@ -59,7 +62,7 @@ class deckDB:
             return deck
         except Error as e:
             return Response(e.msg, 500)
-    def addDeck(deck):
+    def addDeck(self, deck):
         mydb = mysql.connector.connect(
                 host="localhost",
                 user="root",
@@ -70,4 +73,5 @@ class deckDB:
         sql = "INSERT INTO deck (name, des) VALUES (%s, %s)"
         val = (deck["name"], deck["des"])
         cursor.execute(sql, val)
-        mydb.commit()    
+        mydb.commit()   
+      

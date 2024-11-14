@@ -4,8 +4,6 @@ import json
 from mysql.connector import Error
 class cardDB:
     def __init__(self, user, password):
-        print(user)
-        print(password)
         self.__user = user
         self.__password = password
     def getAllCards(self):

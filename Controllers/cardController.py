@@ -6,8 +6,6 @@ from mysql.connector import Error
 from Database.card_database import cardDB
 api_key = os.getenv("API_KEY")
 api_secret = os.getenv("API_SECRET")
-print(api_key)
-print(api_secret)
 db = cardDB(api_key,api_secret)
 cardBP = Blueprint('card', __name__, url_prefix='/card', static_folder='../static', static_url_path='/static')
 @cardBP.route("/")
