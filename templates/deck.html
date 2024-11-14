@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+<main>
+    <section id="Deck Page">
+        <h1>Your Decks</h1>
+        <div class="col">
+            Decks
+        </div>
+        </div>
+        
+        <div>
+            <div class="card" style="width: 10rem;">
+                <img src="./static/prison.webp" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{decks[0]["DeckName"]}}</h5>
+                    <p class="card-text">{{decks[0]["DeckDescription"]}}</p>
+                    <a href="#" class="btn btn-primary">Full View</a>
+                </div>
+            </div>
+            {{decks[0]["DeckId"]}}
+            {{decks[0]["DeckName"]}}
+            {{decks[0]["DeckDescription"]}}
+        </div>
+        
+    </section>
+</main>
+{% endblock %}

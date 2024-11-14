@@ -3,11 +3,16 @@ import mysql.connector
 import json
 from mysql.connector import Error
 class cardDB:
-    def getAllCards():
+    def __init__(self, user, password):
+        print(user)
+        print(password)
+        self.__user = user
+        self.__password = password
+    def getAllCards(self):
         mydb = mysql.connector.connect(
                 host="localhost",
-                user="root",
-                password="1234",
+                user=self.__user,
+                password= self.__password,
                 database="vanguard"
             )
             
